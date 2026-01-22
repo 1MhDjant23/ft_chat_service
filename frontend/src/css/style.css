@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  /* display: flex; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 2rem; */
+  min-height: 100vh;
+  background-color: aqua;
+}
+
+.chat-container {
+  padding: 10rem 4rem;
+  background-color: beige;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+}

@@ -1,63 +1,137 @@
-import  { useState } from 'react';
+import  { useState, useEffect, useRef } from 'react';
 import socket from '../socket';
+import '../css/style.css'
 
 function  ChatApp() {
+  const [allMessages, setMessages] = useState([
+    {
+      id: 1,
+      user: 'me',
+      message: 'hiii!'
+    },
+    {
+      id: 2,
+      user: 'imposter',
+      message: 'i get it'
+    }
+  ]);
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+  useEffect(() => {
+    scrollToBottom();
+  }, [allMessages])
+
+
+  const handleSubmit = () => {
+    if (inputMessage.trim() === '') return;
+    const newMess = {
+      id: allMessages.length + 1,
+      user: 'me',
+      message: inputMessage
+    };
+    setMessages([...allMessages, newMess]);
+    setInputMessage('');
+  }
   const [inputMessage, setInputMessage] = useState('');
 
+  useEffect(() => {
+    socket.on('connect', () => console.log(`i'm connected: ${socket.id}`));
+    socket.on('welcome', (messg) => console.log(messg));
+  }, []);
 
-  const handleSend = () => {
-    // console.log(`that is my socketID: ${socket.id}`);
-    // console.log(`Message: ${inputMessage}`);
-    socket.emit('send-message', { content: inputMessage });
-  }
     return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl flex flex-col overflow-hidden">
-        <header className="flex items-center justify-between px-6 py-4 bg-white border-b">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold">💬 ChatApp</h1>
-            <p className="text-sm text-gray-500">Welcome <span className="font-medium">mait-taj</span></p>
-          </div>
-          <div className="text-sm text-gray-400">Online</div>
-        </header>
-
-        <main className="flex-1 p-4 overflow-auto">
-          <div className="flex flex-col space-y-3">
-            {/* {messages.map((m) => {
-              const mine = m.author === 'me';
-              return (
-                <div
-                  key={m.id}
-                  className={`flex ${mine ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`${mine ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-900'} rounded-xl px-4 py-2 max-w-[70%] whitespace-pre-wrap`}>
-                    {m.content}
-                  </div>
-                </div>
-              );
-            })}
-            <div ref={messagesEndRef} /> */}
-          </div>
-        </main>
-
-        <form onSubmit={handleSend} className="px-4 py-3 bg-white border-t flex items-center gap-3">
-          <input
-            value={inputMessage}
-            onChange={(ev) => setInputMessage(ev.target.value)}
-            className="flex-1 rounded-full border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            placeholder="✍🏼 Type a message..."
-            aria-label="Type a message"
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-full disabled:opacity-50"
-            disabled={!inputMessage.trim()}
+    <div style={styles.app}>
+        {/* header */}
+      <div style={styles.header}>
+          <h1 className="title">💬 ChatApp</h1>
+          <span style={styles.status}>●Status</span>
+      </div>
+        {/* messages */}
+      <div style={styles.messageContainer}>
+      {allMessages.map((mes) => (
+        <div
+          key={mes.id}
+          style={{...styles.messageWrapper, justifyContent: mes.user === 'me' ? 'flex-end' : 'flex-start'} }
+        >
+          <div
+            style={{...styles.message,
+              backgroundColor: mes.user === 'me' ? '#667eea' : '#e0e0e0',
+              color: mes.user === 'me' ? 'white' : 'black'
+            }}
           >
-            Send
-          </button>
-        </form>
+            <p style={styles.messageName}>{mes.user}</p>
+            <p style={styles.messageText}>{mes.message}</p>
+
+          </div>
+        </div>
+      ))}
+      <div ref={messagesEndRef}></div>
+      </div>
+      {/* from */}
+      <div className="form-submission">
+        <input
+          placeholder="type message..."
+          type="text"
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+        />
+        <button onClick={handleSubmit}>Send</button>
       </div>
     </div>
   );
+}
+
+const styles = {
+  app: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    backgroundColor: '#f5f5f5'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1.5rem 2rem',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+
+  },
+  status: {
+    fontSize: '0.9rem'
+  },
+  messageContainer: {
+    flex: 1,
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    backgroundColor: 'green',
+    overflowY: 'auto'
+  },
+  messageWrapper: {
+    marginBottom: '0.9rem',
+    display: 'flex'
+  },
+  message: {
+    maxWidth: '60%',
+    padding: '0.75rem 1rem',
+    borderRadius: '10px',
+    wordWrap: 'break-word'
+  },
+  messageName: {
+    margin: '0 0 0.25rem 0',
+    fontSize: '0.85rem',
+    fontWeight: 'bold',
+    opacity: '0.5'
+  },
+  messageText: {
+    margin: '0.25rem 0',
+    fontSize: '1rem'
+  }
+
 }
 export default  ChatApp;

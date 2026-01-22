@@ -4,9 +4,9 @@ const SOCKET_URL = 'http://localhost:3001';
 
 const socket = io.connect(SOCKET_URL);
 
-socket.on('get', (data) => {
-  console.log(`user data: ${data.user} - ${data.age}`);
-});
+// socket.on('connect', () => {
+//   console.log('connected **************');
+// });
 
 export default  socket;
 
