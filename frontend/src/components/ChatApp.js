@@ -65,51 +65,55 @@ function  ChatApp() {
           >
             <p style={styles.messageName}>{mes.user}</p>
             <p style={styles.messageText}>{mes.message}</p>
-
           </div>
         </div>
       ))}
       <div ref={messagesEndRef}></div>
       </div>
       {/* from */}
-      <div className="form-submission">
+      <div style={styles.formContainer}>
         <input
+          style={styles.inputText}
           placeholder="type message..."
           type="text"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
         />
-        <button onClick={handleSubmit}>Send</button>
+        <button
+          style={styles.sendButton}
+          onClick={handleSubmit}>Send</button>
       </div>
     </div>
   );
 }
 
+
+// --------- styles for chat ------------
 const styles = {
   app: {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5'
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '1.5rem 2rem',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    boxShadow: '0 1px 10px rgba(0, 0, 0, 0.1)'
+    
   },
   status: {
     fontSize: '0.9rem'
   },
   messageContainer: {
+    backgroundColor: '#f5f5f5',
     flex: 1,
+    gap: '1rem',
     padding: '2rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
-    backgroundColor: 'green',
     overflowY: 'auto'
   },
   messageWrapper: {
@@ -131,6 +135,35 @@ const styles = {
   messageText: {
     margin: '0.25rem 0',
     fontSize: '1rem'
+  },
+  formContainer: {
+    display: 'flex',
+    gap: '0.5rem',
+    backgroundColor: 'white',
+    padding: '1.5rem 2rem',
+    borderTop: '0.4rem solid #ddd',
+  },
+  inputText: {
+    backgroundColor: '#ddd',
+    flex: '1',
+    border: '1px solid #ddd',
+    padding: '0.75rem 1rem',
+    borderRadius: '25rem',
+    fontSize: '1.2rem',
+    // fontWeight: 'bold',
+    outline: 'none',
+    transition: 'border-color 0.3s'
+  },
+  sendButton: {
+    backgroundColor: '#667eea',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '25px',
+    color: 'white',
+    border: 'none',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'background-color 0.9s'
   }
 
 }
